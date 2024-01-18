@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Mapa Leaflet con Geolocalización</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 300px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Div donde se renderizará el mapa -->
+<div id="map"></div>
+
+<!-- Script que incluye la biblioteca Leaflet y crea el mapa -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+  var mymap = L.map('map').setView([51.505, -0.09], 13);
+
+  // Añadir una capa de mapa base de OpenStreetMap al mapa
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(mymap);
+
+  // Añadir un control de geolocalización al mapa
+  mymap.locate({setView: true, maxZoom: 16});
+
+  // Manejar eventos de geolocalización
+  function onLocationFound(e) {
+    var radius = e.accuracy / 2;
+
+    // Crear un círculo que representa la precisión de la ubicación
+    L.circle(e.latlng, radius).addTo(mymap);
+
+    // Crear un marcador en la ubicación actual
+    L.marker(e.latlng).addTo(mymap)
+      .bindPopup("¡Estás aquí!").openPopup();
+  }
+
+  function onLocationError(e) {
+    alert(e.message);
+  }
+
+  mymap.on('locationfound', onLocationFound);
+  mymap.on('locationerror', onLocationError);
+</script>
+
+</body>
+</html>
